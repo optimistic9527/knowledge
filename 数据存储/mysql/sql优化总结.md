@@ -138,6 +138,6 @@ from .. on.. join ..where ..group by ....having ...select dinstinct ..order by l
 
   5.  like尽量以“常量”开头，不要以'%'开头，否则索引失效
 
-  6.  尽量不要使用or，否则索引失效（字段都是单值索引是可以的）、
+  6.  尽量不要使用or，否则索引失效（字段都是单值索引是可以的）
 
 
