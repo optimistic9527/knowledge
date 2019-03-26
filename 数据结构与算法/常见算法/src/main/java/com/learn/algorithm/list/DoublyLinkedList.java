@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 
 /**
+ *  双向链表基本实现
  * @author guoxingyong
  * @data 2019/3/26 21:07
  */
