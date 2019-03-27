@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * LeetCode 146 LRU Cache
- *
+ * LeetCode 146 Least Recently Used (LRU) cache.
  * @author guoxingyong
  * @data 2019/3/27 9:03
  */
