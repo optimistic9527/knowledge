@@ -102,6 +102,21 @@ public class SinglyLinkedList<E> implements Collection<E> {
     }
 
     @Override
+    public E get(int index) {
+        if(count<index){
+            throw new IndexOutOfBoundsException("");
+        }
+        Node<E> current=head;
+        for (int i = 0; i <count ; i++) {
+            if(i==index){
+                break;
+            }
+            current=current.next;
+        }
+        return current.e;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb=new StringBuilder();
         sb.append("SinglyLinkedList{");
@@ -133,6 +148,7 @@ public class SinglyLinkedList<E> implements Collection<E> {
         stringSinglyLinkedList.add("ddd");
         stringSinglyLinkedList.add("eee");
         stringSinglyLinkedList.add("fff");
+        System.out.println(stringSinglyLinkedList.get(3));
         System.out.println(stringSinglyLinkedList.toString());
         stringSinglyLinkedList.remove("ccc");
         System.out.println(stringSinglyLinkedList.toString());

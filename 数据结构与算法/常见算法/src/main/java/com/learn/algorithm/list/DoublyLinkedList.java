@@ -107,6 +107,21 @@ public class DoublyLinkedList<T> implements Collection<T> {
         return true;
     }
 
+    @Override
+    public T get(int index) {
+        if(count<index){
+            throw new IndexOutOfBoundsException("");
+        }
+        Node<T> current=head.next;
+        for (int i = 0; i <count ; i++) {
+            if(i==index){
+                break;
+            }
+            current=current.next;
+        }
+        return current.t;
+    }
+
     @AllArgsConstructor
     @NoArgsConstructor
     private class Node<T> {
@@ -124,6 +139,7 @@ public class DoublyLinkedList<T> implements Collection<T> {
         doublyLinkedList.add("aaaa");
         doublyLinkedList.add("bbb");
         doublyLinkedList.add("ccc");
+        System.out.println(doublyLinkedList.get(2));
         System.out.println(doublyLinkedList.size());
         doublyLinkedList.add("ddd");
         doublyLinkedList.add("eee");

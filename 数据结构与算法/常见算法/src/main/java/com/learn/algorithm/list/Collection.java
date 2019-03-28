@@ -18,4 +18,5 @@ public interface Collection<E> {
 
     boolean addFirst(E e);
 
+    E get(int index);
 }
