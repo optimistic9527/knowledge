@@ -77,7 +77,7 @@
 ![](../../image/类加载器.jpg)
 
 ### 4. 打破双亲委派
-
+- 继承ClassLoader,复写loadClass，findClass方法
 ```Java
 public class SimpleObject {
 }
@@ -154,7 +154,7 @@ Exception in thread "main" java.lang.ClassCastException: com.learn.algorithm.lis
 	at com.learn.algorithm.list.Test.main(Test.java:24)
 Disconnected from the target VM, address: '127.0.0.1:8524', transport: 'socket'
 ```
-
+- 使用线程上下文类加载器  
 [线程上下文类加载器](https://blog.csdn.net/zhoudaxia/article/details/35897057)(这里需要再研究一下，感觉自己理解的不到位)
 
 
