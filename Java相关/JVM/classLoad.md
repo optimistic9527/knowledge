@@ -144,7 +144,7 @@ public class Test {
 }
 ```
 
-```java
+```text
 //输出结果
 sun.misc.Launcher$AppClassLoader@18b4aac2
 897913732
