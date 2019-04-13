@@ -50,11 +50,11 @@ Linux的内核将所有的外部设备都看成了一个文件来操作，对于
 
 - **文件IO**
 
-![](..\image\文件io.png)
+ ![](../image/文件io.png)
 
 - **网络IO**（网络IO的本质是Socket的读取，Socket在Linux系统中抽象为流，IO可以理解外对流的操作 ）
 
-![](..\image\网络IO.png)
+ ![](../image/网络IO.png)
 
 #### 五种IO模型
 
@@ -68,7 +68,7 @@ Linux的内核将所有的外部设备都看成了一个文件来操作，对于
 
     
 
-    ![B-IO](..\image\B-IO.png)
+    ![B-IO](../image/B-IO.png)
 
   - 流程简介：
 
