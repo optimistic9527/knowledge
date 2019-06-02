@@ -40,10 +40,10 @@
 
 #### 三.MVCC的实现
 - 在innodb中除了我们自己创建的字段之外，还存储着额外的字段DATA_TRX_ID，DATA_ROLL_PTR，DB_ROW_ID，DELETE BIT
-   - DATA_TRX_ID:标记了最新更新这条行记录的transaction id，每处理一个事务，其值自动+1
-   - DATA_ROLL_PTR:指向当前记录项的rollback segment的undo log记录，找之前版本的数据就是通过这个指针
-   - DB_ROW_ID:当由innodb自动产生聚集索引时，聚集索引包括这个DB_ROW_ID的值，否则聚集索引中不包括这个值.，这个用于索引当中
-   - DELETE BIT:位用于标识该记录是否被删除，这里的不是真正的删除数据，而是标志出来的删除。真正意义的删除是在commit的时候
+   - **DATA_TRX_ID**:标记了最新更新这条行记录的transaction id，每处理一个事务，其值自动+1
+   - **DATA_ROLL_PTR**:指向当前记录项的rollback segment的undo log记录，找之前版本的数据就是通过这个指针
+   - **DB_ROW_ID**:当由innodb自动产生聚集索引时，聚集索引包括这个DB_ROW_ID的值，否则聚集索引中不包括这个值.，这个用于索引当中
+   - **DELETE BIT**:位用于标识该记录是否被删除，这里的不是真正的删除数据，而是标志出来的删除。真正意义的删除是在commit的时候
 ![](../../image/mvcc1.png)
 ![](../../image/mvcc2.png)
 - InnoDB的MVCC，是通过在每行纪录后面保存两个隐藏的列来实现的。这两个列，一个保存了行的创建时间(DATA_TRX_ID)，一个保存了行的删除时间(DELETE BIT)，当然存储的并不是实际的时间值，而是系统版本号。每开始一个新的事务，系统版本号都会自动递增。事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行纪录的版本号进行比较。
