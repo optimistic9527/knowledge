@@ -92,6 +92,7 @@ fabric.properties
 .idea/knowledge.iml
 .idea/misc.xml
 .idea/modules.xml
+.idea/dataSources
 "Java\347\233\270\345\205\263/"
 "\344\270\273\346\265\201\346\241\206\346\236\266/"
 "\346\225\260\346\215\256\345\255\230\345\202\250/"

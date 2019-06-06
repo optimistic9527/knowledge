@@ -94,7 +94,7 @@ git clone https://github.com/inconshreveable/ngrok.git
 9. **运行run.bat**
 
    ```bash
-   //出现以下内容表示成功链接：
+   #出现以下内容表示成功链接：
    ngrok
    
    Tunnel Status                 online
