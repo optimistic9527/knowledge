@@ -12,7 +12,7 @@
 
   - TERMINATED:终止状态，表示当前线程已经执行完毕
 
-![](../../../image/thread_state.png)
+![](../../image/thread_state.png)
 ### 线程的中断
 - 与线程中断相关的API
   - public void interrupt():打断当前线程，只是为interrupt flag设置为true，如果是个可以被打断的方法，会抛出一个InterruptException异常,**异常收到后interrupt标识会清除(变成false)**
