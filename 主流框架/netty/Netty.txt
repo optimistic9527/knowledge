@@ -1,0 +1,54 @@
+new  NioEventLoopGroup();
+1.调用到 NioEventLoopGroup的父类MultithreadEventLoopGroup，会把创建的线程数变成默认的2*CPUProcessor
+2.在调用到MultithreadEventLoopGroup的父类MultithreadEventExecutorGroup
+   2.1.executor = new ThreadPerTaskExecutor(newDefaultThreadFactory())这个为executor赋值，并且这里代表了后面创建的线程就是一个FastThreadLocalThread
+   2.2 根据线程数量循环调用newChild(executor, args），也就是创建了N个NioEventLoop
+   2.3 创建线程选择器
+
+
+
+
+ServerBootstrap.bind
+1.调用initAndRegister();
+    1.1channelFactory.newChannel()创建NioServerSocketChannel
+        1.1.1创建ServerSocketChannel
+        1.1.2 创建ChannelId
+        1.1.3 创建NioMessageUnsafe
+        1.1.4 创建DefaultChannelPipeline
+        1.1.5 readInterestOp=ACCEPT事件的值
+        1.1.6 ServerSocketChannel.configureBlocking(false);
+        1.1.7 创建NioServerSocketChannelConfig
+    1.2 init(channel)，初始化NioServerSocketChannel
+        1.2.1NioServerSocketChannelConfig.setOption设置TCP的一些参数
+        1.2.2 channel.attr(key).set(e.getValue());设置用户自定的的属性值，放到AttributeMap中提供调用
+        1.2.3 为NioServerSocketChannel的ChannelPipeline添加初始化的一个handler
+    1.3 config().group().register(channel) 注册
+        1.3.1 调用EventExecutorChooser.next()选择出一个NioEventLoop
+        1.3.2 NioEventLoop.register->AbstractUnsafe.register
+           1.3.2.1  AbstractChannel.this.eventLoop = eventLoop 把当前的eventLoop与NioServerSocketChannel绑定
+           1.3.2.2 eventLoop 发布一个任务register0(promise);注册selector
+              1.3.2.2.1 因为这里是第一次发布任务所以这时会调用startThread()，executor就会创建一个线程与与当前的NioEventLoop绑定了，就会去执行NioEventLoop的run方法
+2.doBind0
+    2.1 发布一个任务channel.bind
+       2.1.0 调用pipeline.bind->tail.bind->head.bind->NioMessageUnsafe.bind
+       2.1.1   javaChannel().bind(localAddress, config.getBacklog());jdk的bind
+       2.1.2 pipeline.fireChannelActive();
+          2.1.2.1 readIfIsAutoRead();->doBeginRead(); 绑定1.1.5步骤中设置的ACCEPT事件
+
+新链接接入流
+NioEventLoop.run()
+   1.processSelectedKey
+      1.1NioMessageUnsafe.read();
+         1.1.1doReadMessages(readBuf);  获取到java的Socket包装成一个NioSocketChannel
+         1.1.2  pipeline.fireChannelRead()->ServerBootstrapAcceptor.channelRead
+              1.1.2.1 为NioSocketChannel的ChannelPipeline添加初始化的一个handler,也就是在启动代码部分用户自定义的ChannelInitializer
+              1.1.2.2  NioServerSocketChannelConfig.setOption设置TCP的一些参数
+              1.1.2.3 channel.attr(key).set(e.getValue());设置用户自定的的属性值，放到AttributeMap中提供调用
+              1.1.2.4 childGroup.register(child)
+	   1.3.1 调用EventExecutorChooser.next()选择出一个NioEventLoop
+                   1.3.2 NioEventLoop.register->AbstractUnsafe.register
+                   1.3.2.1  AbstractChannel.this.eventLoop = eventLoop 把当前的eventLoop与NioSocketChannel绑定
+                   1.3.2.2 eventLoop 发布一个任务register0(promise)
+                      1.3.2.2.1 因为这里是第一次发布任务所以这时会调用startThread()，executor就会创建一个线程与与当前的NioEventLoop绑定了，就会去执行NioEventLoop的run方法
+	      1.3.2.2.2 doRegister 把当前Channel注册到刚刚绑定的eventLoop 的Selector上
+                      1.3.2.2.3 传播ChannelActive事件并且调用readIfIsAutoRead()传播read事件->unsafe.beginRead()->doBeginRead READ事件

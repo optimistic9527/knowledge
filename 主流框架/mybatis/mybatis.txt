@@ -1,0 +1,36 @@
+@MapperScan->@Import
+->MapperScannerRegistrar
+
+MapperScannerRegistrar#registerBeanDefinitions
+ClassPathMapperScanner#doScan，会把我们所有的Mapper或者说是Dao变成一个MapperFactoryBean
+在你的代码中需要该Mapper或者Dao时就会调用MapperFactoryBean#getObject方法->sqlSession#getMappe->Configuration#getMapper->
+mapperRegistry#getMapper->mapperProxyFactory.newInstance->返回一个MapperProxy也就是你的Mapper或者Dao的代理类
+
+
+上面的总结就是我们的每个被扫描的接口，会往Spring中注入一个MapperFactoryBean，当我们需要的时候可以返回一个他的代理类也就是一个MapperProxy
+
+MybatisAutoConfiguration
+注入SqlSessionFactory
+通过我们配置的注入到MybatisProperties中
+构建出一个mybatis的Configuration
+获取SqlSessionFactory->SqlSessionFactoryBean#getObject->afterPropertiesSet()->buildSqlSessionFactory()->对于配置文件解析成对应的类例如
+TypeAliasRegistry,TypeHandlerRegister,以及把每个select,insert,delete,update变成一个MappedStatement
+并且会把每个Mapper加入到MapperRegister的knownMappers中，<Class<?>, MapperProxyFactory<?>
+
+
+
+调用一个Mapper或者一个Dao的方法流程
+因为所有的接口都变成了一个MapperProxy所以就会调用MapperProxy的invoke
+如果方法是第一次调用就会把改方法对应的标签的一些信息，sql信息封装到一个MapperMethod的中缓存起来
+调用mapperMethod#execute判断执行的sql类型，select|update|insert|delete
+SqlSession#selectOne这里的sqlSqlSession在实际上是SqlSessionTemplate是个单利的放在了Spring中，是真正sqlSession执行的模板类
+sqlSessionProxy#selectOne这个是在SqlSessionTemplate创建出来的时候创建出来的一个SqlSession的代理类
+SqlSessionInterceptor#invoke
+	SqlSessionUtil.getSession：本质就是在当前TransactionSynchronizationManager的resources(ThreadLocal)中拿到当前线程的Session,如果是第一次肯定是拿到的null，再SqlSessionFactory#openSession，如果当前是在事务中就代表后面的还会用到该sqlSession就缓存起来
+	 method.invoke(sqlSession, args)：真正执行的就是创建出来的或者缓存中sqlSession
+		DefaultSqlSesiion#selectList会去找到该方法的MappedStatement
+			Executor.query
+
+
+
+
