@@ -29,7 +29,9 @@ SqlSessionInterceptor#invoke
 	SqlSessionUtil.getSession：本质就是在当前TransactionSynchronizationManager的resources(ThreadLocal)中拿到当前线程的Session,如果是第一次肯定是拿到的null，再SqlSessionFactory#openSession，如果当前是在事务中就代表后面的还会用到该sqlSession就缓存起来
 	 method.invoke(sqlSession, args)：真正执行的就是创建出来的或者缓存中sqlSession
 		DefaultSqlSesiion#selectList会去找到该方法的MappedStatement
-			Executor.query
+			Executor.query->queryFromDatabase->simpleExecutor.doQuery
+            				newStatementHandler创建如果有插件就是插件代理过的StatementHandler
+            				 StatementHandler.query->PreparedStatement.execute()->ResultSetHandler.handleResultSets(ps);
 
 
 
